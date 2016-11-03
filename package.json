@@ -2,8 +2,10 @@
   "name": "ss-ttf",
   "version": "0.0.0",
   "private": true,
+  "main": "./bin/server.js",
   "scripts": {
-    "start": "node ./bin/server.js"
+    "start": "node ./bin/server.js",
+    "swagger": "NODE_ENV=swagger swagger project start & swagger project edit"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
@@ -13,6 +15,7 @@
     "express": "~4.14.0",
     "morgan": "~1.7.0",
     "node-sass-middleware": "0.9.8",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "swagger-express-mw": "^0.7.0"
   }
 }
