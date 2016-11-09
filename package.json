@@ -1,11 +1,11 @@
 {
   "name": "ss-ttf",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "private": true,
   "main": "./bin/server.js",
   "scripts": {
     "start": "node ./bin/server.js",
-    "swagger": "NODE_ENV=swagger swagger project start & swagger project edit"
+    "swagger": "NODE_ENV=swagger swagger project start -m & swagger project edit"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
