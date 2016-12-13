@@ -1,4 +1,5 @@
 const models = require('../../models/models');
+const log = require('../../config/logger');
 
 module.exports = {
   getById: getUserById,
@@ -35,7 +36,7 @@ function registerNewUser(req, res, next) {
 }
 
 function getToken(req, res, next) {
-  console.log('getToken reached.');
-  console.log('getToken req: ' + JSON.stringify(req.user));
+  log.debug('getToken req.user: ' + JSON.stringify(req.user));
+
   return res.sendStatus(200);
 }

@@ -1,3 +1,5 @@
+const log = require('../../config/logger');
+
 module.exports = {
   getById: getUserById,
   register: registerNewUser,
@@ -31,12 +33,12 @@ function registerNewUser(req, res) {
 }
 
 function getToken(req, res) {
-  console.log('getToken.');
+  log.info('swagger:getToken.');
   var creds = req.swagger.params.credentials;
 
-  console.log('creds: ' + creds);
+  log.info('swagger:creds: ' + creds);
   res.setHeader('X-Auth', '123.456.789');
-  console.log('header: ' + res.getHeader('X-Auth'));
+  log.info('swagger:header: ' + res.getHeader('X-Auth'));
   res.status(200);
   res.end('ok');
 }

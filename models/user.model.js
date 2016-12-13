@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+const log = require('../config/logger');
 
 const Schema = mongoose.Schema;
 
@@ -21,7 +22,7 @@ userSchema.statics.findByUsername = function (username, errUserCb) {
 };
 
 userSchema.methods.validatePassword = function(password, errSuccessCb) {
-  console.log('validatePassword: ' + password + ' ' + this.password);
+  log.debug('validatePassword: ' + password + ' ' + this.password);
 
   bcrypt.compare(password, this.password, errSuccessCb);
 };
