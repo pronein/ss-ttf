@@ -8,6 +8,7 @@
     "swagger": "NODE_ENV=swagger swagger project start -m & swagger project edit"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
@@ -16,6 +17,8 @@
     "mongoose": "^4.6.6",
     "morgan": "~1.7.0",
     "node-sass-middleware": "0.9.8",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
     "serve-favicon": "~2.3.0",
     "swagger-express-mw": "^0.7.0"
   }

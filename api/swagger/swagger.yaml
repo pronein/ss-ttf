@@ -12,6 +12,25 @@ consumes:
 produces:
   - application/json
 paths:
+  /token:
+    x-swagger-router-controller: users.controller
+    get:
+      description: Returns a jwt token given a set of user credentials
+      operationId: token
+      parameters:
+        - name: credentials
+          in: body
+          description: The username and password to authenticate on
+          required: true
+          schema:
+            $ref: "#/definitions/AuthRequest"
+      responses:
+        "200":
+          description: Success
+          headers:
+            X-Auth:
+              description: jwt for authentication
+              type: string
   /user/{id}:
     x-swagger-router-controller: users.controller
     get:
@@ -58,6 +77,16 @@ paths:
   /swagger:
     x-swagger-pipe: swagger_raw
 definitions:
+  AuthRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+      - username
+      - password
   NewUserResponse:
     type: object
     properties:

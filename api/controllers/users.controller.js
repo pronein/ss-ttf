@@ -2,7 +2,8 @@ const models = require('../../models/models');
 
 module.exports = {
   getById: getUserById,
-  register: registerNewUser
+  register: registerNewUser,
+  token: getToken
 };
 
 function getUserById(req, res, next) {
@@ -31,4 +32,10 @@ function registerNewUser(req, res, next) {
 
     return res.status(201).json({id: user._id});
   })
+}
+
+function getToken(req, res, next) {
+  console.log('getToken reached.');
+  console.log('getToken req: ' + JSON.stringify(req.user));
+  return res.sendStatus(200);
 }

@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('./config/passport');
 
 require('./config/mongoose');
 
@@ -30,6 +31,7 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport);
 
 app.use('/', index);
 app.use('/api/user', users);
