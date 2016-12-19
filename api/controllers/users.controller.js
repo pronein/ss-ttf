@@ -1,5 +1,7 @@
 const models = require('../../models/models');
 const log = require('../../config/logger');
+const authHeaderName = require('../../config/passport').authHeaderName;
+const config = require('../../config/config');
 
 module.exports = {
   getById: getUserById,
@@ -36,7 +38,7 @@ function registerNewUser(req, res, next) {
 }
 
 function getToken(req, res, next) {
-  log.debug('getToken req.user: ' + JSON.stringify(req.user));
+  log.info('Token generated: ' + req.headers[authHeaderName]);
 
   return res.sendStatus(200);
 }

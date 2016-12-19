@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var passport = require('./config/passport');
+var passport = require('./config/passport').initialized;
 
 require('./config/mongoose');
 
