@@ -4,8 +4,8 @@
   "private": true,
   "main": "./bin/server.js",
   "scripts": {
-    "start": "NODE_ENV=dev DEBUG=ss-ttf:* node ./bin/server.js",
-    "swagger": "NODE_ENV=swagger swagger project start -m & swagger project edit"
+    "start": "cross-env NODE_ENV=dev DEBUG=ss-ttf:* node ./bin/server.js",
+    "swagger": "cross-env NODE_ENV=swagger swagger project start -m & swagger project edit"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -23,5 +23,8 @@
     "passport-http": "^0.3.0",
     "serve-favicon": "~2.3.0",
     "swagger-express-mw": "^0.7.0"
+  },
+  "devDependencies": {
+    "cross-env": "^3.1.4"
   }
 }
