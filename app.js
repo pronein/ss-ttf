@@ -9,7 +9,8 @@ var passport = require('./config/passport').initialized;
 require('./config/mongoose');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
+var usersRoutes = require('./routes/users');
+var permissionsRoutes = require('./routes/permissions');
 
 var app = express();
 
@@ -34,7 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport);
 
 app.use('/', index);
-app.use('/api/user', users);
+app.use('/api/user', usersRoutes);
+app.use('/api/permission', permissionsRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
