@@ -38,7 +38,7 @@ function registerNewUser(req, res, next) {
 }
 
 function getToken(req, res, next) {
-  log.info('Token generated: ' + req.headers[authHeaderName]);
+  log.info('Token generated: ' + res.getHeader(authHeaderName));
 
   return res.sendStatus(200);
 }
