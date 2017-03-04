@@ -2,6 +2,7 @@ const models = require('../../models/models');
 const log = require('../../config/logger');
 const authHeaderName = require('../../config/passport').authHeaderName;
 const config = require('../../config/config');
+const AuthorizationError = require('../errors').Authorization;
 
 module.exports = {
   getById: getUserById,
@@ -10,6 +11,9 @@ module.exports = {
 };
 
 function getUserById(req, res, next) {
+  if (!req.isAuthorized) {
+    return next(new AuthorizationError('Not Authorized'));
+  }
 
   models.User.findByUserId(req.params.id, function (err, user) {
     if (err) {

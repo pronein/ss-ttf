@@ -48,6 +48,8 @@ function isAuthorized(role) {
           generateToken(req, res, next);
         });
       });
+    } else {
+      next();
     }
   }
 }
