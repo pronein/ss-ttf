@@ -4,7 +4,7 @@
   "private": true,
   "main": "./bin/server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=dev DEBUG=ss-ttf:* node ./bin/server.js",
+    "start": "cross-env NODE_ENV=dev DEBUG=ss-ttf:* nodemon ./bin/server.js",
     "swagger": "cross-env NODE_ENV=swagger swagger project start -m & swagger project edit"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "swagger-express-mw": "^0.7.0"
   },
   "devDependencies": {
-    "cross-env": "^3.1.4"
+    "cross-env": "^3.1.4",
+    "nodemon": "^1.11.0"
   }
 }
