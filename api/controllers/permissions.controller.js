@@ -30,5 +30,13 @@ function createPermission(req, res, next) {
     return next(new AuthorizationError('Not Authorized'));
   }
 
-  res.sendStatus(201);
+  const requestedPermission = new models.Permission(req.body);
+
+  requestedPermission.save(function(err, permission) {
+    if(err) {
+      return next(err);
+    }
+
+    res.status(201).json({id: permission._id});
+  });
 }

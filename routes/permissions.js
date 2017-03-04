@@ -16,7 +16,7 @@ router.use(function(req, res, next) {
 });
 
 router.post('/', isAuthorized('permission_admin'), controller.createPermission);
-router.put('/:id', isAuthorized('permission_admin'), controller.updatePermission);
-router.get('/:id', isAuthorized('permission_admin'), controller.getById);
+router.put('/:id', isAuthorized('permission_update'), controller.updatePermission);
+router.get('/:id', isAuthorized('permission_read'), controller.getById);
 
 module.exports = router;

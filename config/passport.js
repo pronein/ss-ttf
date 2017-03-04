@@ -19,7 +19,7 @@ module.exports = {
   generateToken: generateToken
 };
 
-function isAuthorized(role) {
+function isAuthorized(permission) {
   return function (req, res, next) {
     const auth = req.headers['authorization'];
     req.isAuthorized = false;
@@ -45,7 +45,7 @@ function isAuthorized(role) {
 
           req.user = user;
 
-          User.hasAuthorization(decoded.sub, role, function (err, authorized) {
+          User.hasAuthorization(decoded.sub, permission, function (err, authorized) {
             if (err) {
               log.error({err: err});
               return next(err);

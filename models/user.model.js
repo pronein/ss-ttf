@@ -40,6 +40,10 @@ userSchema.methods.validatePassword = function (password, errSuccessCb) {
 };
 
 userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) {
+  if(!Array.isArray(permissionsRequested)) {
+    permissionsRequested = [permissionsRequested];
+  }
+
   User.aggregate()
     .unwind('$roles')
     .lookup({
@@ -73,12 +77,17 @@ userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) 
         return errSuccessCb(err);
       }
 
+      //permissionsRequested => permissionsRequested.map(function(p) { return p.toString() })[0] == permission_admin
+      //  but expecting permission document
+
+      //results.map(function(r) {return r.permissions})[0].toString() == 58bb15e827059f946caea6d0
+      //  but not flattening enough
       const success = (permissionsRequested || [])
         .map(function (permission) {
           return permission._id;
         })
         .every(function (permission) {
-          return results.permissions.find(function (resultPermission) {
+          return results.length && results.permissions.find(function (resultPermission) {
             return permission === resultPermission;
           });
         });
