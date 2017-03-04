@@ -40,7 +40,7 @@ userSchema.methods.validatePassword = function (password, errSuccessCb) {
 };
 
 userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) {
-  this.aggregate()
+  User.aggregate()
     .unwind('$roles')
     .lookup({
       from: 'roles',
@@ -114,4 +114,4 @@ userSchema.pre('save', function (next) {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = module.exports = mongoose.model('User', userSchema);

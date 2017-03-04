@@ -31,21 +31,29 @@ function isAuthorized(role) {
       }
 
       const token = parts[1];
-      const payload = jwt.decode(token);
       jwt.verify(token, config.jwt.secret, function (err, decoded) {
         if (err) {
           log.error({err: err});
           return next(err);
         }
 
-        User.hasAuthorization(decoded.sub, role, function (err, authorized) {
+        User.findByUserId(decoded.sub, function(err, user) {
           if (err) {
             log.error({err: err});
             return next(err);
           }
 
-          req.isAuthorized = authorized;
-          generateToken(req, res, next);
+          req.user = user;
+
+          User.hasAuthorization(decoded.sub, role, function (err, authorized) {
+            if (err) {
+              log.error({err: err});
+              return next(err);
+            }
+
+            req.isAuthorized = authorized;
+            generateToken(req, res, next);
+          });
         });
       });
     } else {
