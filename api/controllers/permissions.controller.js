@@ -1,42 +1,65 @@
+'use strict';
+
 const models = require('../../models/models');
-const log = require('../../config/logger');
-const config = require('../../config/config');
-const AuthorizationError = require('../errors').Authorization;
 
 module.exports = {
   getById: getPermissionById,
-  updatePermission: updatePermission,
-  createPermission: createPermission
+  getAll: getAllPermissions,
+  update: updatePermission,
+  create: createPermission,
+  'delete': deletePermission
 };
 
-function getPermissionById(req, res, next) {
-  if (!req.isAuthorized) {
-    return next(new AuthorizationError('Not Authorized'));
-  }
+function getAllPermissions(req, res, next) {
+  models.Permission.find(function (err, permissions) {
+    if (err)
+      return next(err);
 
-  res.sendStatus(200);
+    return res.status(200).json({permissions: permissions});
+  });
+}
+
+function getPermissionById(req, res, next) {
+  const permissionId = req.params.id;
+
+  models.Permission.findById(permissionId, function (err, permission) {
+    if (err)
+      return next(err);
+
+    return res.status(200).json({permission: permission});
+  });
 }
 
 function updatePermission(req, res, next) {
-  if (!req.isAuthorized) {
-    return next(new AuthorizationError('Not Authorized'));
-  }
+  const permissionId = req.params.id;
+  const permission = req.body;
 
-  res.sendStatus(200);
+  models.Permission.findByIdAndUpdate(permissionId, permission, function (err, updatedPermission) {
+    if (err)
+      return next(err);
+
+    return res.status(200).json({permission: updatedPermission});
+  });
 }
 
 function createPermission(req, res, next) {
-  if (!req.isAuthorized) {
-    return next(new AuthorizationError('Not Authorized'));
-  }
-
   const requestedPermission = new models.Permission(req.body);
 
-  requestedPermission.save(function(err, permission) {
-    if(err) {
+  requestedPermission.save(function (err, permission) {
+    if (err)
       return next(err);
-    }
 
     res.status(201).json({id: permission._id});
+  });
+}
+
+function deletePermission(req, res, next) {
+  const permissionId = req.params.id;
+
+  models.Permission.remove({_id: permissionId}, function (err) {
+    if (err)
+      return next(err);
+
+    res.sendStatus(204);
   });
 }

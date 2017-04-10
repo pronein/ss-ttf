@@ -2,7 +2,7 @@ const bunyan = require('bunyan');
 
 module.exports = {
   mongo: {
-    connectionString: 'mongodb://localhost/ss_ttf_dev'
+    connectionString: 'mongodb://127.0.0.1/ss_ttf_dev'
   },
   bunyan: {
     baseOptions: {

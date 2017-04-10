@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const log = require('../config/logger');
+'use strict';
 
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const permissionSchema = new Schema({
@@ -13,10 +13,16 @@ const permissionSchema = new Schema({
 permissionSchema.methods.toJSON = function () {
   const permission = this.toObject();
   delete permission._id;
-  //noinspection JSUnresolvedVariable
   delete permission.__v;
 
   return permission;
+};
+
+permissionSchema.statics.getPermissionsByKeys = function (permissionKeys, errPermissionsCb) {
+  if (!Array.isArray(permissionKeys))
+    permissionKeys = [permissionKeys];
+
+  return this.find({key: {$in: permissionKeys}}, errPermissionsCb);
 };
 
 module.exports = mongoose.model('Permission', permissionSchema);

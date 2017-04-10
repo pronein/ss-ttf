@@ -1,8 +1,9 @@
+'use strict';
+
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const log = require('../config/logger');
-
-const Schema = mongoose.Schema;
 
 var userSchema = new Schema({
   firstName: String,
@@ -24,13 +25,13 @@ userSchema.statics.findByUsername = function (username, errUserCb) {
 
 userSchema.statics.hasAuthorization = function (userId, permissionRequested, errSuccessCb) {
   this.findByUserId(userId, function (err, user) {
-    if (err){
+    if (err) {
       log.error({err: err});
       return errSuccessCb(err);
     }
 
     user.isAuthorized(permissionRequested, errSuccessCb);
-  })
+  });
 };
 
 userSchema.methods.validatePassword = function (password, errSuccessCb) {
@@ -40,9 +41,8 @@ userSchema.methods.validatePassword = function (password, errSuccessCb) {
 };
 
 userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) {
-  if(!Array.isArray(permissionsRequested)) {
+  if (!Array.isArray(permissionsRequested))
     permissionsRequested = [permissionsRequested];
-  }
 
   User.aggregate()
     .unwind('$roles')
@@ -71,24 +71,21 @@ userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) 
       _id: 0,
       permissions: 1
     })
-    .exec(function (err, results) {
+    .exec(function (err, rolePermissions) {
       if (err) {
         log.error({err: err});
         return errSuccessCb(err);
       }
 
-      //permissionsRequested => permissionsRequested.map(function(p) { return p.toString() })[0] == permission_admin
-      //  but expecting permission document
-
-      //results.map(function(r) {return r.permissions})[0].toString() == 58bb15e827059f946caea6d0
-      //  but not flattening enough
       const success = (permissionsRequested || [])
         .map(function (permission) {
           return permission._id;
         })
-        .every(function (permission) {
-          return results.length && results.permissions.find(function (resultPermission) {
-            return permission === resultPermission;
+        .every(function (requestedPermissionId) {
+          return rolePermissions.length && rolePermissions.find(function (role) {
+            return role.permissions.find(function (rolePermissionId) {
+              return requestedPermissionId.equals(rolePermissionId);
+            });
           });
         });
 
@@ -101,24 +98,25 @@ userSchema.methods.toJSON = function () {
 
   delete user._id;
   delete user.password;
-  //noinspection JSUnresolvedVariable
   delete user.__v;
 
   return user;
 };
 
 userSchema.pre('save', function (next) {
-  var user = this;
+  const user = this;
 
-  if (!user.registrationDate) {
+  if (!user.registrationDate)
     user.registrationDate = new Date();
-  }
+
   if (user.isModified('password')) {
     bcrypt.hash(this.password, null, null, function (err, hash) {
-      if (err) next(err);
+      if (err)
+        return next(err);
 
       user.password = hash;
-      next();
+
+      return next();
     });
   }
 });

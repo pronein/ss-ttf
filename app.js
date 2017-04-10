@@ -1,20 +1,26 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passport = require('./config/passport').initialized;
+'use strict';
 
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passport = require('./config/passport').initialized;
+
+// Configure mongoose
 require('./config/mongoose');
 
-var index = require('./routes/index');
-var usersRoutes = require('./routes/users');
-var permissionsRoutes = require('./routes/permissions');
+// Build routes
+const index = require('./routes/index');
+const usersRoutes = require('./routes/users');
+const permissionsRoutes = require('./routes/permissions');
+const rolesRoutes = require('./routes/roles');
 
-var app = express();
+// Build app
+const app = express();
 
-// view engine setup
+// Setup view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -34,9 +40,11 @@ app.use(require('node-sass-middleware')({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport);
 
+// Associate routes
 app.use('/', index);
 app.use('/api/user', usersRoutes);
 app.use('/api/permission', permissionsRoutes);
+app.use('/api/role', rolesRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

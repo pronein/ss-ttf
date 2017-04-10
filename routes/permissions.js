@@ -1,22 +1,27 @@
-const express = require('express');
-const router = express.Router();
+'use strict';
+
+const router = require('express').Router();
 const controller = require('../api/controllers/permissions.controller');
-const passport = require('passport');
 const log = require('../config/logger');
 const isAuthorized = require('../config/passport').isAuthorized;
 
-router.param('id', function(req, res, next, id){
+router.param('id', function (req, res, next, id) {
   log.debug('router.params.id: ' + id);
-  next();
+  return next();
 });
 
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
   req.isApi = true;
-  next();
+  return next();
 });
 
-router.post('/', isAuthorized('permission_admin'), controller.createPermission);
-router.put('/:id', isAuthorized('permission_update'), controller.updatePermission);
-router.get('/:id', isAuthorized('permission_read'), controller.getById);
+router.post('/', isAuthorized('permission_admin'), controller.create);
+
+router.put('/:id', isAuthorized('permission_admin'), controller.update);
+
+router.get('/', isAuthorized('permission_admin'), controller.getAll);
+router.get('/:id', isAuthorized('permission_admin'), controller.getById);
+
+router.delete('/:id', isAuthorized('permission_admin'), controller.delete);
 
 module.exports = router;

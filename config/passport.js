@@ -1,8 +1,18 @@
+'use strict';
+
 const passport = require('passport');
 const basicStrategy = require('./strategies/basic');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
-const User = require('../models/models').User;
+
+const models = require('../models/models');
+const User = models.User;
+const Permission = models.Permission;
+
+const errors = require('../api/errors');
+const AuthorizationError = errors.Authorization;
+const InternalServerError = errors.InternalServer;
+
 const log = require('./logger');
 const debug = require('debug')('ss-ttf:passport');
 
@@ -19,16 +29,22 @@ module.exports = {
   generateToken: generateToken
 };
 
-function isAuthorized(permission) {
+function isAuthorized(permissionKeys) {
+  //sanity check to force array
+  if (!permissionKeys) {
+    permissionKeys = [];
+  } else if (!Array.isArray(permissionKeys)) {
+    permissionKeys = [permissionKeys];
+  }
+
   return function (req, res, next) {
     const auth = req.headers['authorization'];
     req.isAuthorized = false;
 
     if (auth) {
       const parts = auth.split(' ');
-      if (parts.length < 2 || parts[0].toLowerCase() !== 'bearer') {
+      if (parts.length < 2 || parts[0].toLowerCase() !== 'bearer')
         return next();
-      }
 
       const token = parts[1];
       jwt.verify(token, config.jwt.secret, function (err, decoded) {
@@ -37,7 +53,7 @@ function isAuthorized(permission) {
           return next(err);
         }
 
-        User.findByUserId(decoded.sub, function(err, user) {
+        User.findByUserId(decoded.sub, function (err, user) {
           if (err) {
             log.error({err: err});
             return next(err);
@@ -45,19 +61,39 @@ function isAuthorized(permission) {
 
           req.user = user;
 
-          User.hasAuthorization(decoded.sub, permission, function (err, authorized) {
+          if (!permissionKeys.length) {
+            req.isAuthorized = true;
+            return generateToken(req, res, next);
+          }
+
+          Permission.getPermissionsByKeys(permissionKeys, function (err, permissions) {
             if (err) {
               log.error({err: err});
               return next(err);
             }
 
-            req.isAuthorized = authorized;
-            generateToken(req, res, next);
+            if (permissionKeys.length !== permissions.length) {
+              const invalidPermissionErr = new InternalServerError('Invalid permission requested.');
+              log.error({err: invalidPermissionErr});
+              return next(invalidPermissionErr);
+            }
+
+            User.hasAuthorization(decoded.sub, permissions, function (err, authorized) {
+              if (err) {
+                log.error({err: err});
+                return next(err);
+              }
+
+              if (req.isAuthorized = authorized)
+                return generateToken(req, res, next);
+
+              return next(new AuthorizationError('Not Authorized.'));
+            });
           });
         });
       });
     } else {
-      next();
+      return next(new AuthorizationError('Not Authorized.'));
     }
   }
 }
