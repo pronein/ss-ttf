@@ -5,7 +5,8 @@
   "main": "./bin/server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=dev DEBUG=ss-ttf:* nodemon ./bin/server.js",
-    "swagger": "cross-env NODE_ENV=swagger swagger project start -m & swagger project edit"
+    "swagger": "cross-env NODE_ENV=swagger swagger project start -m & swagger project edit",
+    "seed-dev": "cross-env NODE_ENV=dev node ./db/index.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",

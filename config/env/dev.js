@@ -1,8 +1,15 @@
 const bunyan = require('bunyan');
-
-module.exports = {
+const config = {
   mongo: {
-    connectionString: 'mongodb://127.0.0.1/ss_ttf_dev'
+    host: '127.0.0.1',
+    port: 27017,
+    db: 'ss_ttf_dev',
+    connectionString: function () {
+      return config.mongo.host + ':' + config.mongo.port + '/' + config.mongo.db;
+    },
+    mongooseConnectionString: function () {
+      return 'mongodb://' + config.mongo.connectionString();
+    }
   },
   bunyan: {
     baseOptions: {
@@ -26,3 +33,5 @@ module.exports = {
     timeOut: 30
   }
 };
+
+module.exports = config;

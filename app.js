@@ -12,10 +12,11 @@ const passport = require('./config/passport').initialized;
 require('./config/mongoose');
 
 // Build routes
-const index = require('./routes/index');
-const usersRoutes = require('./routes/users');
-const permissionsRoutes = require('./routes/permissions');
-const rolesRoutes = require('./routes/roles');
+const indexRoutes = require('./routes/index');
+const userRoutes = require('./routes/users');
+const permissionRoutes = require('./routes/permissions');
+const roleRoutes = require('./routes/roles');
+const tripRoutes = require('./routes/trips');
 
 // Build app
 const app = express();
@@ -41,10 +42,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport);
 
 // Associate routes
-app.use('/', index);
-app.use('/api/user', usersRoutes);
-app.use('/api/permission', permissionsRoutes);
-app.use('/api/role', rolesRoutes);
+app.use('/', indexRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/permission', permissionRoutes);
+app.use('/api/role', roleRoutes);
+app.use('/api/trip', tripRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
