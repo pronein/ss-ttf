@@ -2,14 +2,14 @@
 print('Empty [checklists] collection...');
 db.checklists.remove({});
 
-const userIds = db
+var userIds = db
   .users
   .find({}, {_id: 1})
   .map(function (user) {
     return user._id;
   });
 
-const tripIds = db
+var tripIds = db
   .trips
   .find({}, {_id: 1})
   .map(function (trip) {
@@ -71,13 +71,3 @@ db.checklists.insert({
     }
   ]
 });
-
-/*
- print('Create checklist for initial user (accessible by other user)');
- db.checklists.insert({
- title: 'My first checklist',
- createdBy: userId,
- trip: tripId,
- accessibleBy: false
- });
- */
