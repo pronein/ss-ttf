@@ -4,16 +4,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 /*
-  Checklist Item Schema (child)
+ Checklist Item Schema (child)
  */
 const checklistItemSchema = new Schema({
-  description: String,
-  isChecked: Boolean,
-  accessLevel: Schema.Types.Mixed //Should be true|false|[ObjectId()]
+  description: {type: String, required: true},
+  isChecked: {type: Boolean, default: false},
+  accessLevel: {type: Schema.Types.Mixed, default: false} //Should be true|false|[ObjectId()]
 });
 
-checklistItemSchema.statics.findByChecklistItemId = function (checklistItemId, errChecklistItemCb) {
-  return this.findById(checklistItemId, errChecklistItemCb);
+checklistItemSchema.methods.updateFromItem = function (checklistItem) {
+  if (checklistItem.hasOwnProperty('description'))
+    this.description = checklistItem.description;
+
+  if (checklistItem.hasOwnProperty('isChecked'))
+    this.isChecked = checklistItem.isChecked;
+
+  if (checklistItem.hasOwnProperty('accessLevel'))
+    this.accessLevel = checklistItem.accessLevel;
 };
 
 checklistItemSchema.methods.toJSON = function () {
@@ -28,14 +35,14 @@ checklistItemSchema.methods.toJSON = function () {
 const ChecklistItem = mongoose.model('ChecklistItem', checklistItemSchema);
 
 /*
-  Checklist Schema (parent)
+ Checklist Schema (parent)
  */
 const checklistSchema = new Schema({
-  title: String,
+  title: {type: String, required: true},
   items: [checklistItemSchema],
-  createdBy: Schema.Types.ObjectId,
-  trip: Schema.Types.ObjectId,
-  accessibleBy: Schema.Types.Mixed //Should be true|false|[ObjectId()]
+  createdBy: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
+  trip: {type: Schema.Types.ObjectId, required: true, ref: 'Trip'},
+  accessibleBy: {type: Schema.Types.Mixed, default: false} //Should be true|false|[ObjectId()]
 });
 
 checklistSchema.statics.findByChecklistId = function (checklistId, errChecklistCb) {

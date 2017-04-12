@@ -11,6 +11,6 @@ module.exports = {
   Role: RoleModel,
   Permission: PermissionModel,
   Trip: TripModel,
-  CheckList: CheckListModel.Checklist,
-  CheckListItem: CheckListModel.ChecklistItem
+  Checklist: CheckListModel.Checklist,
+  ChecklistItem: CheckListModel.ChecklistItem
 };
