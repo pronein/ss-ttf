@@ -1,0 +1,130 @@
+swagger: "2.0"
+info:
+  version: "0.0.2"
+  title: Time To Fish
+host: localhost:10010
+basePath: /api
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /token:
+    x-swagger-router-controller: users.controller
+    get:
+      description: Returns a jwt token given a set of user credentials
+      operationId: token
+      parameters:
+        - name: credentials
+          in: body
+          description: The username and password to authenticate on
+          required: true
+          schema:
+            $ref: "#/definitions/AuthRequest"
+      responses:
+        "200":
+          description: Success
+          headers:
+            X-Auth:
+              description: jwt for authentication
+              type: string
+  /user/{id}:
+    x-swagger-router-controller: users.controller
+    get:
+      description: Returns user with given id
+      operationId: getById
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user to retrieve
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/UserResponse"
+        "204":
+          description: User not found
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /user:
+    x-swagger-router-controller: users.controller
+    post:
+      description: Register the given user object as a new user
+      operationId: register
+      parameters:
+        - name: user
+          in: body
+          description: The user object to register
+          required: true
+          schema:
+            $ref: "#/definitions/UserRequest"
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: "#/definitions/NewUserResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  AuthRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+      - username
+      - password
+  NewUserResponse:
+    type: object
+    properties:
+      id:
+        type: string
+    required:
+      - id
+  UserRequest:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+  UserResponse:
+    required:
+      - firstName
+      - lastName
+      - username
+      - email
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      username:
+        type: string
+      email:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
