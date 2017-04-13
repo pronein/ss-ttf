@@ -26,9 +26,9 @@ function getAllSchedules(req, res, next) {
 
   const filter = {};
   if (tripId)
-    filter.trip = tripId;
+    filter.associatedTrip = tripId;
 
-  models.Schedule.find(filter, function(err, schedules) {
+  models.Schedule.find(filter, function (err, schedules) {
     if (err)
       return next(err);
 
@@ -42,7 +42,7 @@ function getAllSchedules(req, res, next) {
 function getScheduleById(req, res, next) {
   const scheduleId = req.params.id;
 
-  models.Schedule.findByScheduleId(scheduleId, function (err, schedule){
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
     if (err)
       return next(err);
 
@@ -56,7 +56,7 @@ function getScheduleById(req, res, next) {
 function getAllScheduledEvents(req, res, next) {
   const scheduleId = req.params.id;
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule) {
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
     if (err)
       return next(err);
 
@@ -74,14 +74,14 @@ function getScheduledEventById(req, res, next) {
   const scheduleId = req.params.id;
   const eventId = req.params.eventId;
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule){
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
     if (err)
       return next(err);
 
     if (!schedule)
       return res.sendStatus(404);
 
-    const events = schedule.events.filter(function(event) {
+    const events = schedule.events.filter(function (event) {
       return event._id.toString() === eventId;
     });
 
@@ -95,7 +95,7 @@ function getScheduledEventById(req, res, next) {
 function getAllScheduledMeals(req, res, next) {
   const scheduleId = req.params.id;
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule) {
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
     if (err)
       return next(err);
 
@@ -109,18 +109,18 @@ function getAllScheduledMeals(req, res, next) {
   });
 }
 
-function getScheduledMealById(req, res, next){
+function getScheduledMealById(req, res, next) {
   const scheduleId = req.params.id;
   const mealId = req.params.mealId;
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule){
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
     if (err)
       return next(err);
 
     if (!schedule)
       return res.sendStatus(404);
 
-    const meals = schedule.meals.filter(function(meal) {
+    const meals = schedule.meals.filter(function (meal) {
       return meal._id.toString() === mealId;
     });
 
@@ -134,7 +134,7 @@ function getScheduledMealById(req, res, next){
 function createSchedule(req, res, next) {
   const requestedSchedule = new models.Schedule(req.body);
 
-  requestedSchedule.save(function(err, schedule) {
+  requestedSchedule.save(function (err, schedule) {
     if (err)
       return next(err);
 
@@ -146,15 +146,15 @@ function createScheduledEvent(req, res, next) {
   const scheduleId = req.params.id;
   const requestedEvent = new models.Event(req.body);
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule) {
-    if(err)
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
+    if (err)
       return next(err);
 
     if (!schedule)
       return res.sendStatus(404);
 
     schedule.events.push(requestedEvent);
-    schedule.save(function(err, schedule){
+    schedule.save(function (err, schedule) {
       if (err)
         return next(err);
 
@@ -167,15 +167,15 @@ function createScheduledMeal(req, res, next) {
   const scheduleId = req.params.id;
   const requestedMeal = new models.Meal(req.body);
 
-  models.Schedule.findByScheduleId(scheduleId, function(err, schedule) {
-    if(err)
+  models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
+    if (err)
       return next(err);
 
     if (!schedule)
       return res.sendStatus(404);
 
     schedule.meals.push(requestedMeal);
-    schedule.save(function(err, schedule){
+    schedule.save(function (err, schedule) {
       if (err)
         return next(err);
 
@@ -187,13 +187,13 @@ function createScheduledMeal(req, res, next) {
 function updateSchedule(req, res, next) {
   const scheduleId = req.params.id;
   const schedule = req.body;
-  const options = {new: true, runValidators:true};
+  const options = {new: true, runValidators: true};
 
-  models.Schedule.findByIdAndUpdate(scheduleId, schedule, options, function(err, updatedSchedule) {
+  models.Schedule.findByIdAndUpdate(scheduleId, schedule, options, function (err, updatedSchedule) {
     if (err)
       return next(err);
 
-    if(!updatedSchedule)
+    if (!updatedSchedule)
       return res.sendStatus(404);
 
     return res.status(200).json({schedule: updatedSchedule});
@@ -265,18 +265,18 @@ function updateScheduledMeal(req, res, next) {
 function deleteSchedule(req, res, next) {
   const scheduleId = req.params.id;
 
-  models.Schedule.findByIdAndRemove(scheduleId, function(err, removedSchedule){
+  models.Schedule.findByIdAndRemove(scheduleId, function (err, removedSchedule) {
     if (err)
       return next(err);
 
-    if(!removedSchedule)
+    if (!removedSchedule)
       return res.sendStatus(404);
 
     return res.sendStatus(200);
   });
 }
 
-function deleteScheduledEvent(req, res, next){
+function deleteScheduledEvent(req, res, next) {
   const scheduleId = req.params.id;
   const eventId = req.params.eventId;
 
@@ -305,7 +305,7 @@ function deleteScheduledEvent(req, res, next){
   });
 }
 
-function deleteScheduledMeal(req, res, next){
+function deleteScheduledMeal(req, res, next) {
   const scheduleId = req.params.id;
   const mealId = req.params.mealId;
 

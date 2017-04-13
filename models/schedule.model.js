@@ -78,8 +78,8 @@ const Event = mongoose.model('Event', eventSchema);
 const scheduleSchema = new Schema({
   month: {type: Number, required: true},
   year: {type: Number, required: true},
-  events: [{type: Schema.Types.ObjectId, ref: 'Event'}],
-  meals: [{type: Schema.Types.ObjectId, ref: 'Meal'}],
+  events: [eventSchema],
+  meals: [mealSchema],
   title: String,
   createdBy: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
   associatedTrip: {type: Schema.Types.ObjectId, required: true, ref: 'Trip'}
