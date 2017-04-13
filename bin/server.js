@@ -7,6 +7,11 @@
 var app = require('../app');
 var debug = require('debug')('ss-ttf:server');
 var http = require('http');
+const log = require('../config/logger');
+
+if (process.env.NODE_ENV === 'swagger') {
+  require('../swagger-app');
+}
 
 /**
  * Get port from environment and store in Express.
@@ -86,5 +91,8 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  const bindMsg = 'Listening on ' + bind;
+
+  debug(bindMsg);
+  log.info(bindMsg);
 }

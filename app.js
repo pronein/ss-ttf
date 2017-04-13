@@ -1,24 +1,38 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+'use strict';
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passport = require('./config/passport').initialized;
 
-var app = express();
+// Configure mongoose
+require('./config/mongoose');
 
-// view engine setup
+// Build routes
+const indexRoutes = require('./routes/index');
+const userRoutes = require('./routes/users');
+const permissionRoutes = require('./routes/permissions');
+const roleRoutes = require('./routes/roles');
+const tripRoutes = require('./routes/trips');
+const checklistRoutes = require('./routes/checklists');
+const scheduleRoutes = require('./routes/schedules');
+
+// Build app
+const app = express();
+
+// Setup view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(require('node-sass-middleware')({
   src: path.join(__dirname, 'public'),
@@ -27,24 +41,37 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport);
 
-app.use('/', index);
-app.use('/users', users);
+// Associate routes
+app.use('/', indexRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/permission', permissionRoutes);
+app.use('/api/role', roleRoutes);
+app.use('/api/trip', tripRoutes);
+app.use('/api/checklist', checklistRoutes);
+app.use('/api/schedule', scheduleRoutes);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+  const isDevEnv = req.app.get('env') === 'dev';
 
-  // render the error page
+  if (req.isApi) {
+    return res
+      .status(err.status || 500)
+      .json(isDevEnv ? err : {message: 'An error has occurred'});
+  }
+
+  res.locals.message = err.message;
+  res.locals.error = isDevEnv ? err : {};
+
   res.status(err.status || 500);
   res.render('error');
 });
