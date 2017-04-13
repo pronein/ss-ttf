@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('express').Router();
-const controller = require('../api/controllers/checklist.controller');
+const controller = require('../api/controllers/checklists.controller.js');
 const log = require('../config/logger');
 const isAuthorized = require('../config/passport').isAuthorized;
 

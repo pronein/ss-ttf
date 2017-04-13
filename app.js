@@ -17,7 +17,8 @@ const userRoutes = require('./routes/users');
 const permissionRoutes = require('./routes/permissions');
 const roleRoutes = require('./routes/roles');
 const tripRoutes = require('./routes/trips');
-const checklistRoutes = require('./routes/checklist');
+const checklistRoutes = require('./routes/checklists');
+const scheduleRoutes = require('./routes/schedules');
 
 // Build app
 const app = express();
@@ -49,6 +50,7 @@ app.use('/api/permission', permissionRoutes);
 app.use('/api/role', roleRoutes);
 app.use('/api/trip', tripRoutes);
 app.use('/api/checklist', checklistRoutes);
+app.use('/api/schedule', scheduleRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -5,6 +5,7 @@ const PermissionModel = require('./permission.model');
 const RoleModel = require('./role.model');
 const TripModel = require('./trip.model');
 const CheckListModel = require('./checklist.model');
+const ScheduleModel = require('./schedule.model');
 
 module.exports = {
   User: UserModel,
@@ -12,5 +13,8 @@ module.exports = {
   Permission: PermissionModel,
   Trip: TripModel,
   Checklist: CheckListModel.Checklist,
-  ChecklistItem: CheckListModel.ChecklistItem
+  ChecklistItem: CheckListModel.ChecklistItem,
+  Schedule: ScheduleModel.Schedule,
+  Meal: ScheduleModel.Meal,
+  Event: ScheduleModel.Event
 };
