@@ -8,7 +8,7 @@ var userIds = db
   .map(function (user) {
     return user._id;
   });
-``
+
 var tripId = db
   .trips
   .find({}, {_id: 1})

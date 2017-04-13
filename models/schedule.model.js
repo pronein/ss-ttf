@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 /*
-  Meal Schema (child)
+ Meal Schema (child)
  */
 const mealSchema = new Schema({
   title: {type: String, required: true},
@@ -13,6 +13,17 @@ const mealSchema = new Schema({
   createdBy: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
   providedBy: {type: Schema.Types.ObjectId, required: true, ref: 'User'}
 });
+
+mealSchema.methods.updateFromMeal = function (meal) {
+  if (meal.hasOwnProperty('title'))
+    this.title = meal.title;
+  if (meal.hasOwnProperty('designation'))
+    this.designation = meal.designation;
+  if (meal.hasOwnProperty('date'))
+    this.date = meal.date;
+  if (meal.hasOwnProperty('providedBy'))
+    this.providedBy = meal.providedBy;
+};
 
 mealSchema.methods.toJSON = function () {
   const meal = this.toObject();
@@ -26,7 +37,7 @@ mealSchema.methods.toJSON = function () {
 const Meal = mongoose.model('Meal', mealSchema);
 
 /*
-  Event Schema (child)
+ Event Schema (child)
  */
 const eventSchema = new Schema({
   title: {type: String, required: true},
@@ -36,6 +47,19 @@ const eventSchema = new Schema({
   members: [{type: Schema.Types.ObjectId, ref: 'User'}],
   description: String
 });
+
+eventSchema.methods.updateFromEvent = function (event) {
+  if (event.hasOwnProperty('title'))
+    this.title = event.title;
+  if (event.hasOwnProperty('startTime'))
+    this.startTime = event.startTime;
+  if (event.hasOwnProperty('endTime'))
+    this.endTime = event.endTime;
+  if (event.hasOwnProperty('members'))
+    this.members = event.members;
+  if (event.hasOwnProperty('description'))
+    this.description = event.description;
+};
 
 eventSchema.methods.toJSON = function () {
   const event = this.toObject();
@@ -49,7 +73,7 @@ eventSchema.methods.toJSON = function () {
 const Event = mongoose.model('Event', eventSchema);
 
 /*
-  Schedule Schema (parent)
+ Schedule Schema (parent)
  */
 const scheduleSchema = new Schema({
   month: {type: Number, required: true},
