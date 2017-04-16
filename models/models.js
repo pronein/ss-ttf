@@ -8,6 +8,7 @@ const CheckListModel = require('./checklist.model');
 const ScheduleModel = require('./schedule.model');
 const PhotoModel = require('./photo.model');
 const GalleryModel = require('./gallery.model');
+const ContestModel = require('./contest.model');
 
 module.exports = {
   User: UserModel,
@@ -20,5 +21,7 @@ module.exports = {
   Meal: ScheduleModel.Meal,
   Event: ScheduleModel.Event,
   Photo: PhotoModel.Photo,
-  Gallery: GalleryModel
+  Gallery: GalleryModel,
+  Contest: ContestModel.Contest,
+  Fish: ContestModel.Fish
 };
