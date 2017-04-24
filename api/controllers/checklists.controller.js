@@ -210,7 +210,7 @@ function deleteChecklistItem(req, res, next) {
       if (err)
         return next(err);
 
-      return res.sendStatus(200);
+      return res.sendStatus(204);
     });
   });
 }

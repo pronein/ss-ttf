@@ -5,17 +5,33 @@ const Schema = mongoose.Schema;
 const log = require('../config/logger');
 
 /*
-  Photo Schema
+ Photo Schema
  */
 const photoSchema = new Schema({
   caption: String,
   url: {type: String, required: true},
   uploadedBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-  updloadLocation: {
+  uploadLocation: {
     latitude: Number,
     longitude: Number
   }
 });
+
+photoSchema.methods.updateFromPhoto = function (photo) {
+  if (photo.hasOwnProperty('caption'))
+    this.caption = photo.caption;
+
+  if (photo.hasOwnProperty('url'))
+    this.url = photo.url;
+
+  if (photo.hasOwnProperty('uploadLocation')) {
+    if (photo.uploadLocation.hasOwnProperty('latitude'))
+      this.uploadLocation.latitude = photo.uploadLocation.latitude;
+
+    if (photo.uploadLocation.hasOwnProperty('longitude'))
+      this.uploadLocation.longitude = photo.uploadLocation.longitude;
+  }
+};
 
 photoSchema.methods.toJSON = function () {
   const photo = this.toObject();
@@ -29,7 +45,7 @@ photoSchema.methods.toJSON = function () {
 const Photo = mongoose.model('Photo', photoSchema);
 
 /*
-  Gallery Schema
+ Gallery Schema
  */
 const gallerySchema = new Schema({
   title: {type: String, required: true},
