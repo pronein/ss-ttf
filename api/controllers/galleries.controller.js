@@ -24,8 +24,10 @@ function getAllGalleries(req, res, next) {
     filter.trip = tripId;
 
   models.Gallery.find(filter, function (err, galleries) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!galleries || !galleries.length)
       return res.sendStatus(404);
@@ -38,8 +40,10 @@ function getGalleryById(req, res, next) {
   const galleryId = req.params.id;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
@@ -52,10 +56,12 @@ function getAllPhotosInGallery(req, res, next) {
   const galleryId = req.params.id;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
-    if (!gallery)
+    if (!gallery || !gallery.photos || !gallery.photos.length)
       return res.sendStatus(404);
 
     return res.status(200).json({photos: gallery.photos});
@@ -67,8 +73,10 @@ function getPhotoById(req, res, next) {
   const photoId = req.params.photoId;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
@@ -84,13 +92,14 @@ function getPhotoById(req, res, next) {
   });
 }
 
-
 function createGallery(req, res, next) {
   const requestedGallery = new models.Gallery(req.body);
 
   requestedGallery.save(function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     res.status(201).json({id: gallery._id});
   });
@@ -101,16 +110,20 @@ function createPhotoInGallery(req, res, next) {
   const galleryId = req.params.id;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
 
     gallery.photos.push(requestedPhoto);
     gallery.save(function (err, gallery) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(201).json({id: gallery.photos[gallery.photos.length - 1]._id});
     });
@@ -123,8 +136,10 @@ function updateGallery(req, res, next) {
   const options = {new: true, runValidators: true};
 
   models.Gallery.findByIdAndUpdate(galleryId, gallery, options, function (err, updatedGallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
@@ -139,8 +154,10 @@ function updatePhoto(req, res, next) {
   const photo = req.body;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
@@ -156,8 +173,10 @@ function updatePhoto(req, res, next) {
     foundPhoto.updateFromPhoto(photo);
 
     gallery.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(200).json({photo: foundPhoto});
     });
@@ -168,24 +187,27 @@ function deleteGallery(req, res, next) {
   const galleryId = req.params.id;
 
   models.Gallery.findByIdAndRemove(galleryId, function (err, removedGallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!removedGallery)
       return res.sendStatus(404);
 
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   });
 }
-
 
 function deletePhoto(req, res, next) {
   const galleryId = req.params.id;
   const photoId = req.params.photoId;
 
   models.Gallery.findByGalleryId(galleryId, function (err, gallery) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!gallery)
       return res.sendStatus(404);
@@ -200,8 +222,10 @@ function deletePhoto(req, res, next) {
     gallery.photos.splice(photoIndexToRemove, 1);
 
     gallery.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.sendStatus(204);
     });

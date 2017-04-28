@@ -6,6 +6,7 @@ const RoleModel = require('./role.model');
 const TripModel = require('./trip.model');
 const CheckListModel = require('./checklist.model');
 const ScheduleModel = require('./schedule.model');
+const PhotoModel = require('./photo.model');
 const GalleryModel = require('./gallery.model');
 
 module.exports = {
@@ -18,6 +19,6 @@ module.exports = {
   Schedule: ScheduleModel.Schedule,
   Meal: ScheduleModel.Meal,
   Event: ScheduleModel.Event,
-  Gallery: GalleryModel.Gallery,
-  Photo: GalleryModel.Photo
+  Photo: PhotoModel.Photo,
+  Gallery: GalleryModel
 };

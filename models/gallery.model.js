@@ -5,53 +5,14 @@ const Schema = mongoose.Schema;
 const log = require('../config/logger');
 
 /*
- Photo Schema
- */
-const photoSchema = new Schema({
-  caption: String,
-  url: {type: String, required: true},
-  uploadedBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-  uploadLocation: {
-    latitude: Number,
-    longitude: Number
-  }
-});
-
-photoSchema.methods.updateFromPhoto = function (photo) {
-  if (photo.hasOwnProperty('caption'))
-    this.caption = photo.caption;
-
-  if (photo.hasOwnProperty('url'))
-    this.url = photo.url;
-
-  if (photo.hasOwnProperty('uploadLocation')) {
-    if (photo.uploadLocation.hasOwnProperty('latitude'))
-      this.uploadLocation.latitude = photo.uploadLocation.latitude;
-
-    if (photo.uploadLocation.hasOwnProperty('longitude'))
-      this.uploadLocation.longitude = photo.uploadLocation.longitude;
-  }
-};
-
-photoSchema.methods.toJSON = function () {
-  const photo = this.toObject();
-
-  delete photo._id;
-  delete photo.__v;
-
-  return photo;
-};
-
-const Photo = mongoose.model('Photo', photoSchema);
-
-/*
  Gallery Schema
  */
 const gallerySchema = new Schema({
   title: {type: String, required: true},
-  photos: [photoSchema],
+  photos: [{type: Schema.Types.ObjectId, ref: 'Photo'}],
   createdBy: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-  trip: {type: Schema.Types.ObjectId, ref: 'Trip', required: true}
+  trip: {type: Schema.Types.ObjectId, ref: 'Trip', required: true},
+  createdOn: {type: Date, default: new Date()}
 });
 
 gallerySchema.statics.findByGalleryId = function (galleryId, errGalleryCb) {
@@ -67,9 +28,4 @@ gallerySchema.methods.toJSON = function () {
   return gallery;
 };
 
-const Gallery = mongoose.model('Gallery', gallerySchema);
-
-module.exports = {
-  Gallery: Gallery,
-  Photo: Photo
-};
+const Gallery = module.exports = mongoose.model('Gallery', gallerySchema);
