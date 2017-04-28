@@ -20,7 +20,7 @@ router.use(function(req, res, next) {
 router.post('/', controller.create);
 
 router.get('/', isAuthorized('user_admin'), controller.getAll);
-router.get('/token', passport.authenticate('basic', {session: false}), generateToken, controller.token);
+router.get('/me/token', passport.authenticate('basic', {session: false}), generateToken, controller.token);
 router.get('/me', isAuthorized(), controller.getMe);
 router.get('/:id', isAuthorized(), controller.getById);
 

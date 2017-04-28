@@ -20,6 +20,9 @@ function getAllTrips(req, res, next) {
       return next(err);
     }
 
+    if (!trips || !trips.length)
+      return res.sendStatus(404);
+
     return res.status(200).json({trips: trips});
   });
 }
@@ -33,6 +36,9 @@ function _getAllTripsForYear(req, res, next) {
       return next(err);
     }
 
+    if (!trips || !trips.length)
+      return res.sendStatus(404);
+
     return res.status(200).json({trips: trips});
   });
 }
@@ -45,6 +51,9 @@ function getTripById(req, res, next) {
       log.error({err: err});
       return next(err);
     }
+
+    if (!trip)
+      return res.sendStatus(404);
 
     return res.status(200).json({trip: trip});
   });
@@ -72,6 +81,9 @@ function updateTrip(req, res, next) {
       log.error({err: err});
       return next(err);
     }
+
+    if (!trip)
+      return res.sendStatus(404);
 
     return res.status(200).json({trip: trip});
   });

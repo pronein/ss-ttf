@@ -33,8 +33,10 @@ function getAllChecklists(req, res, next) {
   }
 
   models.Checklist.find(filter, function (err, checklists) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklists || !checklists.length)
       return res.sendStatus(404);
@@ -47,8 +49,10 @@ function getChecklistById(req, res, next) {
   const checklistId = req.params.id;
 
   models.Checklist.findByChecklistId(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklist)
       return res.sendStatus(404);
@@ -61,10 +65,12 @@ function getAllChecklistItems(req, res, next) {
   const checklistId = req.params.id;
 
   models.Checklist.findByChecklistId(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
-    if (!checklist)
+    if (!checklist || !checklist.items || !checklist.items.length)
       return res.sendStatus(404);
 
     return res.status(200).json({items: checklist.items});
@@ -76,8 +82,10 @@ function getChecklistItemById(req, res, next) {
   const checklistItemId = req.params.itemId;
 
   models.Checklist.findByChecklistId(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklist)
       return res.sendStatus(404);
@@ -97,8 +105,10 @@ function createChecklist(req, res, next) {
   const requestedChecklist = new models.Checklist(req.body);
 
   requestedChecklist.save(function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     res.status(201).json({id: checklist._id});
   });
@@ -109,16 +119,20 @@ function createChecklistItem(req, res, next) {
   const checklistId = req.params.id;
 
   models.Checklist.findById(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklist)
       return res.sendStatus(404);
 
     checklist.items.push(requestedChecklistItem);
     checklist.save(function (err, checklist) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(201).json({id: checklist.items[checklist.items.length - 1]._id});
     });
@@ -131,8 +145,10 @@ function updateChecklist(req, res, next) {
   const options = {new: true, runValidators: true};
 
   models.Checklist.findByIdAndUpdate(checklistId, checklist, options, function (err, updatedChecklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!updatedChecklist)
       return res.sendStatus(404);
@@ -147,8 +163,10 @@ function updateChecklistItem(req, res, next) {
   const checklistItem = req.body;
 
   models.Checklist.findByChecklistId(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklist)
       return res.sendStatus(404);
@@ -164,8 +182,10 @@ function updateChecklistItem(req, res, next) {
     foundItem.updateFromItem(checklistItem);
 
     checklist.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(200).json({item: foundItem});
     });
@@ -176,13 +196,15 @@ function deleteChecklist(req, res, next) {
   const checklistId = req.params.id;
 
   models.Checklist.findByIdAndRemove(checklistId, function (err, removedChecklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!removedChecklist)
       return res.sendStatus(404);
 
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   });
 }
 
@@ -191,8 +213,10 @@ function deleteChecklistItem(req, res, next) {
   const checklistItemId = req.params.itemId;
 
   models.Checklist.findById(checklistId, function (err, checklist) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!checklist)
       return res.sendStatus(404);
@@ -207,10 +231,12 @@ function deleteChecklistItem(req, res, next) {
     checklist.items.splice(itemIndexToRemove, 1);
 
     checklist.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
-      return res.sendStatus(200);
+      return res.sendStatus(204);
     });
   });
 }

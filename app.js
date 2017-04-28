@@ -7,18 +7,20 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const passport = require('./config/passport').initialized;
+const fileUpload = require('express-fileupload');
 
 // Configure mongoose
 require('./config/mongoose');
 
 // Build routes
-const indexRoutes = require('./routes/index');
-const userRoutes = require('./routes/users');
-const permissionRoutes = require('./routes/permissions');
-const roleRoutes = require('./routes/roles');
-const tripRoutes = require('./routes/trips');
-const checklistRoutes = require('./routes/checklists');
-const scheduleRoutes = require('./routes/schedules');
+const indexRoutes = require('./routes/index.routes');
+const userRoutes = require('./routes/user.routes');
+const permissionRoutes = require('./routes/permission.routes');
+const roleRoutes = require('./routes/role.routes');
+const tripRoutes = require('./routes/trip.routes');
+const checklistRoutes = require('./routes/checklist.routes');
+const scheduleRoutes = require('./routes/schedule.routes');
+const photoRoutes = require('./routes/photo.routes');
 
 // Build app
 const app = express();
@@ -42,6 +44,7 @@ app.use(require('node-sass-middleware')({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport);
+app.use(fileUpload({safeFileNames: true, preserveExtension: 4}));
 
 // Associate routes
 app.use('/', indexRoutes);
@@ -51,16 +54,17 @@ app.use('/api/role', roleRoutes);
 app.use('/api/trip', tripRoutes);
 app.use('/api/checklist', checklistRoutes);
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/photo', photoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  var err = new Error('URI Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   const isDevEnv = req.app.get('env') === 'dev';
 
   if (req.isApi) {
