@@ -148,7 +148,7 @@ function _moveUploadedFileToNewHome(fileInfo, dir, uri, rootUri, res, next) {
   const finalFileSystemPath = path.join(dir, newFilename);
   const finalUri = rootUri + uri + '/' + newFilename;
 
-  fileInfo.mv(finalFileSystemPath, function(err) {
+  fileInfo.mv(finalFileSystemPath, function (err) {
     if (err) {
       log.error({err: err});
       return next(err);
