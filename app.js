@@ -12,14 +12,14 @@ const passport = require('./config/passport').initialized;
 require('./config/mongoose');
 
 // Build routes
-const indexRoutes = require('./routes/index');
-const userRoutes = require('./routes/users');
-const permissionRoutes = require('./routes/permissions');
-const roleRoutes = require('./routes/roles');
-const tripRoutes = require('./routes/trips');
-const checklistRoutes = require('./routes/checklists');
-const scheduleRoutes = require('./routes/schedules');
-const photoRoutes = require('./routes/photos');
+const indexRoutes = require('./routes/index.routes');
+const userRoutes = require('./routes/user.routes');
+const permissionRoutes = require('./routes/permission.routes');
+const roleRoutes = require('./routes/role.routes');
+const tripRoutes = require('./routes/trip.routes');
+const checklistRoutes = require('./routes/checklist.routes');
+const scheduleRoutes = require('./routes/schedule.routes');
+const photoRoutes = require('./routes/photo.routes');
 
 // Build app
 const app = express();
