@@ -20,6 +20,10 @@ const photoSchema = new Schema({
   }
 });
 
+photoSchema.statics.findByPhotoId = function (photoId, errPhotoCb) {
+  return this.findById(photoId, errPhotoCb);
+};
+
 photoSchema.methods.updateFromPhoto = function (photo) {
   if (photo.hasOwnProperty('caption'))
     this.caption = photo.caption;
