@@ -29,8 +29,10 @@ function getAllSchedules(req, res, next) {
     filter.associatedTrip = tripId;
 
   models.Schedule.find(filter, function (err, schedules) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedules || !schedules.length)
       return res.sendStatus(404);
@@ -43,8 +45,10 @@ function getScheduleById(req, res, next) {
   const scheduleId = req.params.id;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -57,14 +61,13 @@ function getAllScheduledEvents(req, res, next) {
   const scheduleId = req.params.id;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
-    if (!schedule)
+    if (!schedule || !schedule.events || !schedule.events.length)
       return res.sendStatus(404);
-
-    if (!schedule.events.length)
-      return res.sendStatus(204);
 
     return res.status(200).json({events: schedule.events});
   });
@@ -75,8 +78,10 @@ function getScheduledEventById(req, res, next) {
   const eventId = req.params.eventId;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -96,14 +101,13 @@ function getAllScheduledMeals(req, res, next) {
   const scheduleId = req.params.id;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
-    if (!schedule)
+    if (!schedule || !schedule.meals || !schedule.meals.length)
       return res.sendStatus(404);
-
-    if (!schedule.meals.length)
-      return res.sendStatus(204);
 
     return res.status(200).json({meals: schedule.meals});
   });
@@ -114,8 +118,10 @@ function getScheduledMealById(req, res, next) {
   const mealId = req.params.mealId;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -135,8 +141,10 @@ function createSchedule(req, res, next) {
   const requestedSchedule = new models.Schedule(req.body);
 
   requestedSchedule.save(function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     return res.status(201).json({id: schedule._id});
   });
@@ -147,16 +155,20 @@ function createScheduledEvent(req, res, next) {
   const requestedEvent = new models.Event(req.body);
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
 
     schedule.events.push(requestedEvent);
     schedule.save(function (err, schedule) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(201).json({id: schedule.events[schedule.events.length - 1]._id});
     });
@@ -168,16 +180,20 @@ function createScheduledMeal(req, res, next) {
   const requestedMeal = new models.Meal(req.body);
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
 
     schedule.meals.push(requestedMeal);
     schedule.save(function (err, schedule) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(201).json({id: schedule.meals[schedule.meals.length - 1]._id});
     });
@@ -190,8 +206,10 @@ function updateSchedule(req, res, next) {
   const options = {new: true, runValidators: true};
 
   models.Schedule.findByIdAndUpdate(scheduleId, schedule, options, function (err, updatedSchedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!updatedSchedule)
       return res.sendStatus(404);
@@ -206,8 +224,10 @@ function updateScheduledEvent(req, res, next) {
   const event = req.body;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -223,8 +243,10 @@ function updateScheduledEvent(req, res, next) {
     foundEvent.updateFromEvent(event);
 
     schedule.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(200).json({event: foundEvent});
     });
@@ -237,8 +259,10 @@ function updateScheduledMeal(req, res, next) {
   const meal = req.body;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -254,8 +278,10 @@ function updateScheduledMeal(req, res, next) {
     foundMeal.updateFromMeal(meal);
 
     schedule.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
       return res.status(200).json({meal: foundMeal});
     });
@@ -266,13 +292,15 @@ function deleteSchedule(req, res, next) {
   const scheduleId = req.params.id;
 
   models.Schedule.findByIdAndRemove(scheduleId, function (err, removedSchedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!removedSchedule)
       return res.sendStatus(404);
 
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   });
 }
 
@@ -281,8 +309,10 @@ function deleteScheduledEvent(req, res, next) {
   const eventId = req.params.eventId;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -297,10 +327,12 @@ function deleteScheduledEvent(req, res, next) {
     schedule.events.splice(eventIndexToRemove, 1);
 
     schedule.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
-      return res.sendStatus(200);
+      return res.sendStatus(204);
     });
   });
 }
@@ -310,8 +342,10 @@ function deleteScheduledMeal(req, res, next) {
   const mealId = req.params.mealId;
 
   models.Schedule.findByScheduleId(scheduleId, function (err, schedule) {
-    if (err)
+    if (err) {
+      log.error({err: err});
       return next(err);
+    }
 
     if (!schedule)
       return res.sendStatus(404);
@@ -326,10 +360,12 @@ function deleteScheduledMeal(req, res, next) {
     schedule.meals.splice(mealIndexToRemove, 1);
 
     schedule.save(function (err) {
-      if (err)
+      if (err) {
+        log.error({err: err});
         return next(err);
+      }
 
-      return res.sendStatus(200);
+      return res.sendStatus(204);
     });
   });
 }
