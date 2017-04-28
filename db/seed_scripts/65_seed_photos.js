@@ -1,19 +1,31 @@
 // Mongo script
+var noAvatarName = 'no_avatar.jpg';
+
 print('Empty [photos] collection...');
 db.photos.remove({});
 
 var userIds = db
   .users
   .find({}, {_id: 1})
-  .map(function (user){
+  .map(function (user) {
     return user._id;
   });
 
 print('Create avatar photo for new users');
 db.photos.insert({
-  name: 'no_avatar.jpg',
+  name: noAvatarName,
   uploadedBy: userIds[0]
 });
+
+print('Update users to contain no_avatar.jpg as their avatar');
+var noAvatarPhotoId = db
+  .photos
+  .find({name: noAvatarName}, {_id: 1})
+  .map(function (photo) {
+    return photo._id;
+  })[0];
+
+db.users.update({}, {$set: {avatar: noAvatarPhotoId}}, {multi: true});
 
 print('Create photos for trip to Lake Lanier (GA)');
 db.photos.insert({
