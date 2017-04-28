@@ -16,10 +16,11 @@ router.use(function (req, res, next) {
 });
 
 router.post('/', isAuthorized('photo_admin'), controller.create);
+router.post('/upload', controller.upload);
 
 router.put('/:id', isAuthorized('photo_admin'), controller.update);
 
-router.get('/', isAuthorized('photo_admin'), controller.getAll);
+router.get('/', controller.getAll);
 router.get('/:id', isAuthorized('photo_admin'), controller.getById);
 
 router.delete('/:id', isAuthorized('photo_admin'), controller.delete);

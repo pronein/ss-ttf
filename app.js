@@ -7,6 +7,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const passport = require('./config/passport').initialized;
+const fileUpload = require('express-fileupload');
 
 // Configure mongoose
 require('./config/mongoose');
@@ -43,6 +44,7 @@ app.use(require('node-sass-middleware')({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport);
+app.use(fileUpload({safeFileNames: true, preserveExtension: 4}));
 
 // Associate routes
 app.use('/', indexRoutes);
