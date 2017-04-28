@@ -19,6 +19,7 @@ const roleRoutes = require('./routes/roles');
 const tripRoutes = require('./routes/trips');
 const checklistRoutes = require('./routes/checklists');
 const scheduleRoutes = require('./routes/schedules');
+const photoRoutes = require('./routes/photos');
 
 // Build app
 const app = express();
@@ -51,16 +52,17 @@ app.use('/api/role', roleRoutes);
 app.use('/api/trip', tripRoutes);
 app.use('/api/checklist', checklistRoutes);
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/photo', photoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  var err = new Error('URI Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   const isDevEnv = req.app.get('env') === 'dev';
 
   if (req.isApi) {
