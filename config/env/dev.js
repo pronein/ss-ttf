@@ -31,6 +31,10 @@ const config = {
   jwt: {
     secret: 'itsasecrettoeveryone',
     timeOut: 30
+  },
+  uploads: {
+    galleryPath: '/galleries',
+    avatars: '/avatars'
   }
 };
 
