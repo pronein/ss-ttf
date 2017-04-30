@@ -19,6 +19,17 @@ gallerySchema.statics.findByGalleryId = function (galleryId, errGalleryCb) {
   return this.findById(galleryId, errGalleryCb);
 };
 
+gallerySchema.methods.updateFromGallery = function (gallery) {
+  if (gallery.hasOwnProperty('title'))
+    this.title = gallery.title;
+
+  if (gallery.hasOwnProperty('trip'))
+    this.trip = gallery.trip;
+
+  if (gallery.hasOwnProperty('photos'))
+    this.photos = gallery.photos;
+};
+
 gallerySchema.methods.toJSON = function () {
   const gallery = this.toObject();
 

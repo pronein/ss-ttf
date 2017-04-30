@@ -21,6 +21,7 @@ const tripRoutes = require('./routes/trip.routes');
 const checklistRoutes = require('./routes/checklist.routes');
 const scheduleRoutes = require('./routes/schedule.routes');
 const photoRoutes = require('./routes/photo.routes');
+const galleryRoutes = require('./routes/gallery.routes');
 
 // Build app
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/trip', tripRoutes);
 app.use('/api/checklist', checklistRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/photo', photoRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
