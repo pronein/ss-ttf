@@ -45,8 +45,9 @@ const config = {
     issuer: serverProtocol + '://' + serverHost + ':' + serverPort + '/'
   },
   uploads: {
-    galleryPath: '/galleries',
-    avatars: '/avatars'
+    galleryPath: 'galleries',
+    loosePath: 'galleries/loose',
+    avatarPath: 'avatars'
   }
 };
 

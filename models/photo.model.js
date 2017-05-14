@@ -17,6 +17,11 @@ const photoSchema = new Schema({
   uploadLocation: {
     latitude: Number,
     longitude: Number
+  },
+  image: {
+    originalName: String,
+    generatedName: String,
+    uri: String
   }
 });
 
@@ -41,6 +46,9 @@ photoSchema.methods.updateFromPhoto = function (photo) {
     if (photo.uploadLocation.hasOwnProperty('longitude'))
       this.uploadLocation.longitude = photo.uploadLocation.longitude;
   }
+
+  if (photo.hasOwnProperty('image'))
+    this.image = photo.image;
 };
 
 photoSchema.pre('save', function (next) {
@@ -71,7 +79,6 @@ photoSchema.pre('save', function (next) {
 photoSchema.methods.toJSON = function () {
   const photo = this.toObject();
 
-  delete photo._id;
   delete photo.__v;
 
   return photo;
