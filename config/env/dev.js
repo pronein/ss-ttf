@@ -1,7 +1,18 @@
+'use strict';
+
 const bunyan = require('bunyan');
+const serverHost = '127.0.0.1';
+const serverPort = '3000';
+const serverProtocol = 'http';
+
 const config = {
+  server: {
+    protocol: serverProtocol,
+    host: serverHost,
+    port: serverPort
+  },
   mongo: {
-    host: '127.0.0.1',
+    host: serverHost,
     port: 27017,
     db: 'ss_ttf_dev',
     connectionString: function () {
@@ -30,7 +41,8 @@ const config = {
   },
   jwt: {
     secret: 'itsasecrettoeveryone',
-    timeOut: 30
+    timeOut: 30,
+    issuer: serverProtocol + '://' + serverHost + ':' + serverPort + '/'
   },
   uploads: {
     galleryPath: '/galleries',

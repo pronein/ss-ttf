@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('ss-ttf:server');
 var http = require('http');
 const log = require('../config/logger');
+const config = require('../config/config');
 
 if (process.env.NODE_ENV === 'swagger') {
   require('../swagger-app');
@@ -17,7 +18,7 @@ if (process.env.NODE_ENV === 'swagger') {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.server.port);
 app.set('port', port);
 
 /**
@@ -27,10 +28,10 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Listen on provided port, using configured host.
  */
 
-server.listen(port);
+server.listen(port, config.server.host);
 server.on('error', onError);
 server.on('listening', onListening);
 

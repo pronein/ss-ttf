@@ -99,18 +99,17 @@ function isAuthorized(permissionKeys) {
 }
 
 function generateToken(req, res, next) {
-  var now = Date.now();
-  var exp = new Date(now);
-  var minutes = exp.getMinutes();
-  var timeOut = config.jwt.timeOut;
+  const now = Date.now();
+  const exp = new Date(now);
+  const minutes = exp.getMinutes();
 
-  var payload = {
-    iss: 'http://ttf.ajschrader.com/',
+  const payload = {
+    iss: config.jwt.issuer,
     sub: req.user._id,
     aud: 'ss-ttf',
     iat: now / 1000,
-    nbf: now / 1000,
-    exp: exp.setMinutes(minutes + timeOut) / 1000
+    nbf: now / 1000 - 5,
+    exp: exp.setMinutes(minutes + config.jwt.timeOut) / 1000
   };
 
   jwt.sign(payload, config.jwt.secret, {}, function (err, token) {
