@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('express').Router();
-const controller = require('../api/controllers/photos.controller');
+const controller = require('../api/controllers/contests.controller');
 const log = require('../config/logger');
 const isAuthorized = require('../config/passport').isAuthorized;
 
@@ -16,13 +16,13 @@ router.use(function (req, res, next) {
 });
 
 router.post('/', controller.create);
-router.post('/upload', controller.upload);
 
-router.put('/:id', isAuthorized('photo_admin'), controller.update);
+router.put('/:id', isAuthorized(), controller.update);
 
 router.get('/', controller.getAll);
 router.get('/:id', controller.getById);
+router.get('/:id/scores', controller.getContestScores);
 
-router.delete('/:id', isAuthorized('photo_admin'), controller.delete);
+router.delete('/:id', controller.delete);
 
 module.exports = router;

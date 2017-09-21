@@ -98,7 +98,6 @@ userSchema.methods.isAuthorized = function (permissionsRequested, errSuccessCb) 
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
 
-  delete user._id;
   delete user.password;
   delete user.__v;
 

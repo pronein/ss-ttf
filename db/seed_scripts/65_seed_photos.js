@@ -13,8 +13,20 @@ var userIds = db
 
 print('Create avatar photo for new users');
 db.photos.insert({
+  caption: 'No Avatar',
+  date: ISODate('2017-01-01'),
   name: noAvatarName,
-  uploadedBy: userIds[0]
+  uploadedOn: ISODate('2017-01-01'),
+  uploadedBy: userIds[0],
+  image: {
+    originalName: 'no_avatar.jpg',
+    generatedName: 'no_avatar.jpg',
+    uri: 'avatars/no_avatar.jpg'
+  },
+  uploadLocation: {
+    latitude: 0,
+    longitude: 0
+  }
 });
 
 print('Update users to contain no_avatar.jpg as their avatar');

@@ -32,30 +32,51 @@ function getAllPhotos(req, res, next) {
 function getPhotoById(req, res, next) {
   const photoId = req.params.id;
 
-  models.Photo.findByPhotoId(photoId, function (err, photo) {
-    if (err) {
-      log.error({err: err});
-      return next(err);
-    }
+  models.Photo.findById(photoId)
+    .populate('uploadedBy')
+    .exec(function (err, photo) {
+      if (err) {
+        log.error({err: err});
+        return next(err);
+      }
 
-    if (!photo)
-      return res.sendStatus(404);
+      if (!photo)
+        return res.sendStatus(404);
 
-    return res.status(200).json({photo: photo});
-  });
+      log.debug({photo: photo});
+      return res.status(200).json({photo: photo});
+    });
 }
 
 function createPhoto(req, res, next) {
   const requestedPhoto = new models.Photo(req.body);
 
-  requestedPhoto.save(function (err, photo) {
-    if (err) {
-      log.error({err: err});
-      return next(err);
-    }
+  if (!requestedPhoto.uploadedBy)
+    models.User.findOne({username: 'sys'}, function (err, user) {
+      if (err) {
+        log.error({err: err});
+        return next(err);
+      }
 
-    return res.status(201).json({id: photo._id});
-  });
+      requestedPhoto.uploadedBy = user;
+      requestedPhoto.save(function (err, photo) {
+        if (err) {
+          log.error({err: err});
+          return next(err);
+        }
+
+        return res.status(201).json({id: photo._id});
+      });
+    });
+  else
+    requestedPhoto.save(function (err, photo) {
+      if (err) {
+        log.error({err: err});
+        return next(err);
+      }
+
+      return res.status(201).json({id: photo._id});
+    });
 }
 
 function updatePhoto(req, res, next) {
@@ -115,9 +136,8 @@ function uploadPhoto(req, res, next) {
     ('00' + (now.getUTCMonth() + 1)).slice(-2) +
     ('00' + now.getUTCDay()).slice(-2);
 
-  const targetDirUri = '/galleries/loose/' + targetDirName;
+  const targetDirUri = path.join(config.uploads.loosePath, targetDirName);
   const targetDirPath = path.join(appPath, 'public', targetDirUri);
-  const rootUri = req.protocol + '://' + req.get('Host');
 
   fs.stat(targetDirPath, function (err, stats) {
     if (err) {
@@ -129,7 +149,7 @@ function uploadPhoto(req, res, next) {
           return next(err);
         }
 
-        return _moveUploadedFileToNewHome(fileInfo, targetDirPath, targetDirUri, rootUri, res, next);
+        return _moveUploadedFileToNewHome(fileInfo, targetDirPath, targetDirUri, res, next);
       });
     }
 
@@ -138,15 +158,15 @@ function uploadPhoto(req, res, next) {
       return next(err);
     }
 
-    return _moveUploadedFileToNewHome(fileInfo, targetDirPath, targetDirUri, rootUri, res, next);
+    return _moveUploadedFileToNewHome(fileInfo, targetDirPath, targetDirUri, res, next);
   });
 }
 
-function _moveUploadedFileToNewHome(fileInfo, dir, uri, rootUri, res, next) {
-  const newFilename = generateUuid().replace(/-/g, '') + path.extname(fileInfo.name).toLowerCase();
+function _moveUploadedFileToNewHome(fileInfo, dir, uri, res, next) {
+  const generatedFileName = generateUuid().replace(/-/g, '') + path.extname(fileInfo.name).toLowerCase();
 
-  const finalFileSystemPath = path.join(dir, newFilename);
-  const finalUri = rootUri + uri + '/' + newFilename;
+  const finalFileSystemPath = path.join(dir, generatedFileName);
+  const relativeUri = path.join(uri, generatedFileName);
 
   fileInfo.mv(finalFileSystemPath, function (err) {
     if (err) {
@@ -154,6 +174,6 @@ function _moveUploadedFileToNewHome(fileInfo, dir, uri, rootUri, res, next) {
       return next(err);
     }
 
-    return res.status(201).json({oldName: fileInfo.name, newName: newFilename, uri: finalUri})
-  })
+    return res.status(201).json({originalName: fileInfo.name, generatedName: generatedFileName, uri: relativeUri});
+  });
 }

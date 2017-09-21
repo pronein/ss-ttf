@@ -15,7 +15,16 @@ module.exports = {
 };
 
 function getMe(req, res, next) {
-  return res.status(200).json({user: req.user});
+  models.Photo.findById(req.user.avatar, function(err, avatar) {
+    if (err) {
+      log.error({err: err});
+      return next(err);
+    }
+
+    req.user.avatar = avatar;
+
+    return res.status(200).json({user: req.user});
+  });
 }
 
 function getAllUsers(req, res, next) {
@@ -99,5 +108,5 @@ function registerNewUser(req, res, next) {
 function getToken(req, res, next) {
   log.debug('Token generated: ' + res.getHeader(authHeaderName));
 
-  return res.sendStatus(200);
+  return res.status(200).json();
 }

@@ -9,6 +9,16 @@ var adminRoleId = db
     return role._id
   });
 
+print('Create [System] user...');
+db.users.insert({
+  firstName: 'System',
+  lastName: 'System',
+  registrationDate: ISODate('2017-01-01'),
+  username: 'sys',
+  email: 'adam.dot.schrader@gmail.com',
+  roles: adminRoleId
+});
+
 print('Create [Schrader, Adam] user...');
 db.users.insert({
   firstName: 'Adam',
